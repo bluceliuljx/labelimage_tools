@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Shortvideo Online Statistics</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+
+  <style>
+    th, td {
+	  text-align: center;
+	}
+	.table thead th {
+	  border-color: #AAA;
+	  vertical-align: middle;
+    }
+	.table tbody td {
+	  border-color: #AAA;
+	  vertical-align: middle;
+    }
+	.container-fluid {
+	  width: 900px;
+	}
+	.parth {
+	  width: 320px;
+	}
+	.subth {
+	  width: 160px;
+	}
+	a {
+	  display:block;
+	  width:80px;
+	  margin:0 auto;
+	}
+  </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 id="vio"></h3>
+			<table id="viotab" class="table table-bordered table-sm">
+			</table>
+            <br>
+			<h3 id="appidwrongpush"></h3>
+            <table id="awptab" class="table table-bordered table-sm">
+			</table>
+            <br>
+			<h3 id="modelwrongpush"></h3>
+            <table id="mwptab" class="table table-bordered table-sm">
+			</table>
+		</div>
+	</div>
+</div>
+    <script src="static/js/tether.min.js"></script>
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/multiline.js"></script>
+    <script src="static/js/stat-scripts-20190412-1937.js"></script>
+    <script>
+		stat_file = "{{stat_file}}";
+		
+		name = get_file_name(stat_file);
+		$("#vio").html(name + " 短视频模型识别数量统计");
+		$("#appidwrongpush").html(name + " 短视频模型错误推送数量统计（按业务）");
+		$("#modelwrongpush").html(name + " 短视频模型错误推送数量统计（按模型）");
+		
+		load_stat(stat_file);
+		
+		function get_file_name(path) {
+		    s = path.lastIndexOf('/') + 1;
+			e = path.lastIndexOf('.');
+			return path.substring(s, e);
+		}
+    </script>
+  </body>
+</html>

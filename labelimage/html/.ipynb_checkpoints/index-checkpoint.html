@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Simple Image Classification Tool</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+    <style type="text/css">
+        .img-box {width: 180px; height: 180px;}
+        pre {
+            white-space:pre-wrap;
+            white-space:-moz-pre-wrap;
+            white-space:-pre-wrap;
+            white-space:-o-pre-wrap;
+            word-wrap:break-word;
+        }
+        .hovertext {
+            position:absolute;
+            color:#f00;
+            opacity: 0.8;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+        }
+        .enlarge {
+            position:absolute;
+            color:#f00;
+            opacity: 0.4;
+            left: 100px;
+            top: 0px;
+            width: 80px;
+            height: 80px;
+            z-index: 2;
+        }
+        div.enlarge img {
+            width: 100%;
+            height: 100%;
+        }
+        .img-container .enlarge {
+            display: none;
+        }
+        .img-container:hover .enlarge {
+            display: block;
+        }
+        .enlarge:hover {
+            opacity: 0.8;
+        }
+        .wrap {
+            margin: 4px auto;
+            display: block;
+            width: 300px;
+            height: 310px;
+            padding: 4px;
+            position: relative;
+            background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaeaf), color-stop(100%, #689ecd));
+            background-image: -webkit-linear-gradient(#aaaeaf, #689ecd);
+            background-image: -moz-linear-gradient(#aaaeaf, #689ecd);
+            background-image: -o-linear-gradient(#aaaeaf, #689ecd);
+            background-image: -ms-linear-gradient(#aaaeaf, #689ecd);
+            background-image: linear-gradient(#aaaeaf, #689ecd);
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+        }
+        .wrap * {
+            position: relative;
+        }
+        .wrap::before {
+            background: white;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            -ms-border-radius: 2px;
+            -o-border-radius: 2px;
+            border-radius: 2px;
+            bottom: 1px;
+            content: '';
+            left: 1px;
+            position: absolute;
+            right: 1px;
+            top: 1px;
+        }
+        .enlarge-window {
+            position:absolute;
+            z-index: 2;
+        }
+        div.enlarge-window img {
+            width: 100%;
+            height: 100%;
+        }
+        .hide {
+            display: none;
+        }
+        .img-container {
+            position:relative;
+            width:180px;
+            height:180px;
+            cursor: default;
+        }
+        .columnbtn {
+            padding-left: 45px;
+            margin-left: 15px;
+            position: relative;
+            height: 180px;
+        }
+        .rowbtn {
+            position: absolute;
+            margin-left: -45px;
+            padding-top: 70px;
+            width: 45px;
+            height: 180px;
+            text-align: center;
+            background-color: #DDD;
+            cursor: default;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .col-md-2 {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    </style>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+        <sub style="font-size:8px;position:absolute;top:0;right:0;">Author: zhuhui4@huya.com</sub>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <h3>
+                                Simple Image Classification Tool
+                            </h3>
+                            <p style="margin-top:15px;">
+                                快捷键：A - 上一页,&nbsp&nbsp&nbspD - 下一页,&nbsp&nbsp&nbspS - 保存,&nbsp&nbsp&nbspZ - 选择当前鼠标所在行
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <label style="width:130px;">源文件夹:</label>
+                            <input id="srcdirinput" style="width:900px;" type="text" />
+                        </div>
+                        <div class="col-md-12">
+                            <label style="width:130px;">目标列表文件:</label>
+                            <input id="dstlistinput" style="width:900px;" type="text" />
+                        </div>
+                        <div class="col-md-12">
+                            <button type="button" id="loadwork" class="btn btn-primary">
+                                载入
+                            </button>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 20px;">
+                            <p id="pagestat">
+                                图片总数: 0
+                                每页图片数: 0
+                                总页数:  0
+                                已选图片数: 0
+                                当前页数: 0
+                            </p>
+                            <button type="button" id="jumppage" class="btn btn-primary">
+                                跳转
+                            </button>
+                            <input id="pageinput" style="width:60px;" type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="images-container">
+                    <!--<div class="row columnbtn">-->
+                        <!--<div class="rowbtn">全选</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box"-->
+                                     <!--src="http://14.17.103.214:4321/data1/AI_demo/sample_pics/movie/1710a6e7671e43be0a12d30feae085f234822771d2df.jpg"/>-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box"-->
+                                     <!--src="http://14.17.103.214:4321/data1/AI_demo/sample_pics/movie/0.99928855896_1722052573_0.95_20171018_23_38_27.jpg">-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg"/>-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                                <!--<div class="enlarge">-->
+                                    <!--<img src="/static/images/magnifier.png"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row columnbtn">-->
+                        <!--<div class="rowbtn">全选</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box"-->
+                                     <!--src="http://14.17.103.214:4321/data1/AI_demo/sample_pics/movie/1710a6e7671e43be0a12d30feae085f234822771d2df.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                <!--<img class="img-box"-->
+                                     <!--src="http://14.17.103.214:4321/data1/AI_demo/sample_pics/movie/0.99928855896_1722052573_0.95_20171018_23_38_27.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                    <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                    <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                    <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                            <!--<div class="img-container">-->
+                                <!--<img class="hovertext hide" src="/static/images/checked.png"/>-->
+                                    <!--<img class="img-box" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <button type="button" id="savework" class="btn btn-success">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="enlarge-window wrap hide">
+        <img src=""/>
+        <video controls loop="loop">
+            <source src="" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <script src="static/js/tether.min.js"></script>
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/multiline.js"></script>
+    <script src="static/js/scripts.2019-0628-1002.js"></script>
+    <script>
+        work_id = "safrar";
+        page_id = 0;
+        page_count = "{{page_count}}";
+        classify_type = "{{classify_type}}";
+        total_pages = 0;
+        total_count = 0;
+        selected_count = 0;
+        img_borber_size = 180;
+        var mouseCtrl = window.document.body;//声明一个变量，默认值为body
+        src = "{{src}}";
+        dst = "{{dst}}";
+
+        initcallbacks();
+
+        $("#loadwork").click(function(){
+            src_dir = $("#srcdirinput").val();
+            dst_list_file = $("#dstlistinput").val();
+            load_work(src_dir, dst_list_file);
+        });
+
+        $("#savework").click(function(){
+            dst_list_file = $("#dstlistinput").val();
+            save_work(work_id, dst_list_file);
+        });
+
+        function isInteger(obj) {
+            return parseInt(obj, 10) === obj;
+        }
+
+        $("#jumppage").click(function() {
+            tmp_page_id = parseInt($("#pageinput").val(), 10);
+            if (isNaN(tmp_page_id) || tmp_page_id < 0) {
+                return;
+            }
+            page_id = tmp_page_id;
+            get_batch_images(work_id, page_count, page_id);
+        });
+
+        window.document.body.onmouseover = function(event){
+            mouseCtrl = event.target;//鼠标每经过一个元素，就把该元素赋值给变量el
+        }
+
+        if (src != "") {
+            $("#srcdirinput").val(src);
+            $("#dstlistinput").val(dst);
+            $("#loadwork").click();
+        }
+    </script>
+  </body>
+</html>
