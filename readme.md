@@ -25,10 +25,7 @@ systemctl restart nginx
 
 ```
 
-default 配置信息
-```
 
-```
 
 
 
